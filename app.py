@@ -36,5 +36,9 @@ def update_task(task_id):
     result = tasks_collection.update_one({"_id": ObjectId(task_id)}, {"$set": data})
     return jsonify({"updated": result.modified_count > 0})
 
+@app.route("/")
+def index():
+    return "Backend is running. Try /tasks"
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
