@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+print("Loaded MONGO_URI:", os.getenv("MONGO_URI"))
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "https://cs4843-final-frontend.onrender.com"}})
@@ -18,6 +19,13 @@ app.config["MONGO_URI"] = os.getenv("MONGO_URI")
 mongo = PyMongo(app)
 db = mongo.db
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
+
+if db:
+    db.users.create_index("username", unique=True)
+    db.tasks.create_index("user_id")
+else:
+    raise Exception("Database connection failed — check MONGO_URI")
+
 
 # Create indexes for performance
 db.users.create_index("username", unique=True)
