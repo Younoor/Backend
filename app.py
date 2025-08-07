@@ -55,7 +55,20 @@ def register():
 
     #create new user and generate id
     result = users_collection.insert_one({"username": username, "password": password})
-    return jsonify({"_id": str(result.inserted_id)}), 201
+    user_id = str(result.inserted_id)
+
+    token = jwt.encode(
+            {"user_id": user_id},
+            app.config["JWT_SECRET_KEY"],
+            algorithm="HS256"
+            )
+
+    return jsonify({
+        "_id": user_id,
+        "username": user["username"],
+        "token": token
+    }), 201
+
 
 #login user
 @app.route("/login", methods=["POST"])
@@ -74,9 +87,9 @@ def login():
                 )
 
         return jsonify({
-        "_id": str(user["_id"]),
-        "username": user["username"],
-        "token": token
+            "_id": str(user["_id"]),
+            "username": user["username"],
+            "token": token
         }), 200
 
     else:
