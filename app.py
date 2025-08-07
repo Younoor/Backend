@@ -65,7 +65,7 @@ def register():
 
     return jsonify({
         "_id": user_id,
-        "username": user["username"],
+        "username": username,
         "token": token
     }), 201
 
